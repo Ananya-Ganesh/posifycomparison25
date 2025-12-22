@@ -3,8 +3,11 @@ nixPkgs = ["python311", "nodejs_18"]
 
 [phases.install]
 cmds = [
-  "python -m pip install --upgrade pip",
-  "pip install -r requirements.txt",
+  "pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
   "cd react-frontend && npm install",
   "cd react-frontend && npm run build",
   "mkdir -p frontend_build",
