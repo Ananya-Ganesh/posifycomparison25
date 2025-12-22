@@ -1,16 +1,15 @@
 [phases.setup]
-nixPkgs = ["python3", "nodejs"]
+nixPkgs = ["python311", "nodejs_18"]
 
 [phases.install]
 cmds = [
-    "python -m pip install -r requirements.txt",
-    "cd react-frontend && npm install && npm run build",
-    "mkdir -p frontend_build",
-    "cp -r react-frontend/dist/* frontend_build/"
+  "python -m pip install --upgrade pip",
+  "pip install -r requirements.txt",
+  "cd react-frontend && npm install",
+  "cd react-frontend && npm run build",
+  "mkdir -p frontend_build",
+  "cp -r react-frontend/dist/* frontend_build/"
 ]
-
-[phases.build]
-cmds = []
 
 [start]
 cmd = "uvicorn app:app --host 0.0.0.0 --port $PORT"
