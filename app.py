@@ -65,8 +65,9 @@ async def health_check():
 
 
 # Mount the React frontend static files
-# We mount 'assets' specifically to avoid conflicts, and then serve index.html for root
-frontend_dist = os.path.join(os.path.dirname(__file__), "react-frontend", "dist")
+# We move the build artifacts to a 'frontend_build' directory in the root during the build process
+# to avoid path confusion.
+frontend_dist = os.path.join(os.path.dirname(__file__), "frontend_build")
 
 # Ensure the path is absolute and correct
 frontend_dist = os.path.abspath(frontend_dist)
@@ -94,15 +95,23 @@ if os.path.exists(frontend_dist):
         return FileResponse(os.path.join(frontend_dist, "index.html"))
 else:
     print(f"Warning: Frontend build directory not found at {frontend_dist}")
-    print("Please run 'npm run build' in the react-frontend directory.")
     
     # Add a dummy root route so the user sees something instead of a 404
     @app.get("/")
     async def root_warning():
+        cwd = os.getcwd()
+        listdir = os.listdir(cwd)
+        
+        react_dir = os.path.join(cwd, "react-frontend")
+        react_listdir = os.listdir(react_dir) if os.path.exists(react_dir) else "react-frontend not found"
+        
         return {
             "error": "Frontend not found",
             "message": f"Expected build directory at: {frontend_dist}",
-            "instruction": "Please check the build logs and ensure 'npm run build' completed successfully."
+            "current_working_directory": cwd,
+            "root_contents": listdir,
+            "react_frontend_contents": react_listdir,
+            "instruction": "The build process failed to copy artifacts to 'frontend_build'. Check nixpacks.toml."
         }
 
 
