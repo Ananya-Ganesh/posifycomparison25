@@ -157,7 +157,7 @@ th,
 .missing {
   color: var(--warn);
 }
-  font-weight: 700;
+  /* font-weight: 700; */
 
 /* Split view layout */
 .split-grid {
